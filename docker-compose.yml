@@ -1,0 +1,18 @@
+services:
+  web: 
+    build:
+      context: .
+    environment:
+      - TOURNAMENT_NAME=${TOURNAMENT_NAME}
+      - PROBLEM_PATH=/problem/${PROBLEM_FILE}
+      - INITIAL_SCORE=${INITIAL_SCORE}
+      - ROOT_FOLDER_ID=${ROOT_FOLDER_ID}
+      - GOOGLE_CREDENTIALS_PATH=/credentials/${GOOGLE_CREDENTIALS_FILE}
+      - RANKING_PATH=/rankings
+    stop_signal: SIGINT
+    volumes:
+      - ./${PROBLEM_FILE}:/problem/${PROBLEM_FILE}:ro
+      - ./${GOOGLE_CREDENTIALS_FILE}:/credentials/${GOOGLE_CREDENTIALS_FILE}:ro
+      - ${RANKING_FOLDER_PATH}:/rankings
+    ports:
+      - '${FLASK_PORT}:8080'
