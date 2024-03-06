@@ -1,4 +1,4 @@
-# aco_competi
+# tsp_competi
 
 This repository contains code for a web app to do tournaments. During a tournament contestants must compete to solve a TSP (traveling salesman problem). The tournaments uses google drive to read the solutions of the contestants and shows the results in a ranking via web. The ranking is periodically updated automatically.
 
