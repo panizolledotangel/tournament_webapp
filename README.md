@@ -26,7 +26,7 @@ PROBLEM_FILE=
 # Name of the problem class used in the tournament
 PROBLEM_CLASS=
 # 1 for maximization problem, 0 for minimization
-PROBLEM_MAXIMIZE=1
+PROBLEM_MAXIMIZE=
 # initial score for all contestants in the tournament
 INITIAL_SCORE=
 # id obtained in step 2,
