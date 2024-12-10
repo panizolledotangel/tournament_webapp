@@ -17,7 +17,7 @@ class Ranking:
     
     def update(self, contestant: str, filename: str, result: Dict):
         try:
-            score = self.problem.solve(result["solution"])
+            score = self.problem.solve(result)
             self.ranking[contestant]["status"] = self.OK_STATUS
             self.ranking[contestant]["message"] = f"Submitted: {filename} on {datetime.now().strftime('%H:%M')}"
             self._update_score(contestant, score)
