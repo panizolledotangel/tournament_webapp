@@ -9,13 +9,13 @@ from sources.logic.problem import Problem
 
 class Tournament:
 
-    def __init__(self, g_drive, problem: Problem):
+    def __init__(self, g_drive, problem: Problem, maximize: bool = False):
         self.gdrive = g_drive
         self.tournament_name = os.getenv('TOURNAMENT_NAME')
         self.contestants = self._load_contestants()
         self.last_checked = self._load_last_checked()
         self.last_md5 = self._load_last_md5()
-        self.ranking =  self._load_ranking(problem)
+        self.ranking =  self._load_ranking(problem, maximize)
         self.logger = logging.getLogger("acotournament")
 
     def check_for_new_results(self):
@@ -40,8 +40,8 @@ class Tournament:
         folders =self. gdrive.list_files(file_id)
         return {f["name"]:f["id"] for f in folders if f['mimeType'] == 'application/vnd.google-apps.folder'}
     
-    def _load_ranking(self, problem: Problem):
-        return Ranking(self.contestants.keys(), problem)
+    def _load_ranking(self, problem: Problem, maximize: bool):
+        return Ranking(self.contestants.keys(), problem, maximize)
 
     def _load_last_checked(self):
         return {c: datetime(1970, 1, 1) for c in self.contestants.keys()}

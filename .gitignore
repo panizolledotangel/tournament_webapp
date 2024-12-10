@@ -160,4 +160,5 @@ cython_debug/
 #.idea/
 credentials.json
 *.tsp
+*.csv
 rankings

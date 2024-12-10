@@ -3,3 +3,5 @@ apscheduler==3.10.4
 oauth2client==4.1.3
 google-api-python-client==2.120.0
 numpy==1.26.4
+pandas
+scikit-learn

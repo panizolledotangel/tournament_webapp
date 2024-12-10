@@ -11,9 +11,10 @@ class Ranking:
     ERROR_STATUS = -1
     PENDING = 0
 
-    def __init__(self, contestants: List[str], problem: Problem):
+    def __init__(self, contestants: List[str], problem: Problem, maximize: bool):
         self.problem = problem
         self.ranking = self._create_ranking(contestants)
+        self.maximize = maximize
     
     def update(self, contestant: str, filename: str, result: Dict):
         try:
@@ -41,8 +42,11 @@ class Ranking:
         return {c: {"best": int(os.environ["INITIAL_SCORE"]), "last": [int(os.environ["INITIAL_SCORE"])], "status": self.PENDING, "message": "No score submitted jet"} for c in contestants}
     
     def _update_score(self, contestant: str, score: float):
-        if score < self.ranking[contestant]["best"]:
-            self.ranking[contestant]["best"] = score 
+        if self.maximize:
+            if score > self.ranking[contestant]["best"]:
+                self.ranking[contestant]["best"] = score
+        else:
+            if score < self.ranking[contestant]["best"]:
+                self.ranking[contestant]["best"] = score 
         
         self.ranking[contestant]["last"].append(score)
-

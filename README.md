@@ -16,15 +16,15 @@ To organize a new tournament you need to follow the next steps.
 
 3. **Create a folder for each contestant**: Inside the google drive folder created in the previous step, create one folder for each contestant. The name of the folder will be the name shown in the ranking. Share the folder with the contestant so he/she can put files into that folder.
 
-4. **Create a .tsp file**: This file will define the TSP problem that needs to be solved by the contestants. More information about .tsp format and tsp files examples can be found [here](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/).
-
-5. **Configure the app**: Create a *.env* file in the root of this repository with the next fields:
+4. **Configure the app**: Create a *.env* file in the root of this repository with the next fields:
 
 ```
 # Name of your tournament
 TOURNAMENT_NAME=
-# tsp file obtained in step 4, needs to be in the root of the repository
+# File with the solution to the problem, more information in the problem class
 PROBLEM_FILE=
+# Name of the problem class used in the tournament
+PROBLEM_CLASS=
 # initial score for all contestants in the tournament
 INITIAL_SCORE=
 # id obtained in step 2,
@@ -45,7 +45,34 @@ Once the webapp is started the contestants will be automatically configured. The
 
 ### Send a solution
 
-Contestants can send a solution by putting a .json file with the next structure inside their folder.
+Contestants can send a solution by putting a .json file with the corresponding structure inside their folder. The structure depends on the problem.
+The folder can have several .json files, however the system will only read the most recent one.
+
+### Ranking update
+
+**The ranking web updates automatically asynchronously every 10 seconds so no refresh is needed**
+
+Each minute the application will check the google drive to check if any contestants have updated their folder. If so, the system will calculate the score of the solution and update the ranking acordingly. 
+
+All contestants start with the default value and a *PENDING* state (⏳). Once they put a .json file in their folder and the system read it, the state of a contestant will change to *OK* (✅). The ranking shows the score of the last solution submitted as well as the best score submmit so far during the whole tournament, in brackets.
+
+If the system encounters error while processing a contestant's solution, the contestant will be marked as *ERROR* (❌). More information about the error can be found at *http://localhost:{FLASK_PORT}/statuses*
+
+## Problems
+
+### TSP problem
+
+TSP (Traveling Salesman problem), a tipical optimization problem where the shortest route that passes through a series of point and return to the initial point must be found. The metric to be minimized is the distance of the solution.
+
+#### ProblemClass
+
+TSPProblem
+
+#### Problem File
+
+This class uses **.tsp files** tp define the TSP problem that needs to be solved by the contestants. More information about .tsp format and tsp files examples can be found [here](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/).
+
+#### Solution format
 
 ```json
 {
@@ -55,14 +82,31 @@ Contestants can send a solution by putting a .json file with the next structure 
 
 The file must have one unique key (*"solution"*) that containts a list of intergers that indicates the order in which the cities of the TSP problem will be visited. One city can only appear one time in the arrive, from the last city the path will travel to the first city. For example, the array *[0,1,2,3]* indicates the next path: 0->1->2->3->0 (i.e we start on city cero then visit cities 1,2 and 3 in that order, and finally go from 3 to 0).
 
-The folder can have several .json files, however the system will only read the most recent one.
+### Classification problem
 
-### Ranking update
+A multiclass classification problem. A solution will be evaluated with the *F1-Score*.
 
-**The ranking web updates automatically asynchronously every 10 seconds so no refresh is needed**
+#### ProblemClass
 
-Each minute the application will check the google drive to check if any contestants have updated their folder. If so, the system will calculate the score of the solution and update the ranking acordingly. 
+ClassificationProblem
 
-All contestants start with the default value and a *PENDING* state (⏳). Once they put a .json file in their folder and the system read it, the state of a contestant will change to *OK* (✅). The ranking shows the length of the last solution submitted as well as the best score submmit so far during the whole tournament.
+#### Problem File
 
-If the system encounters error while processing a contestant's solution, the contestant will be marked as *ERROR* (❌). More information about the error can be found at *http://localhost:{FLASK_PORT}/statuses*
+A .csv file with the ground truth solution of the problem. The file must contain two columns: `nid` and `y`.
+
+* `nid`: contains a unique identifier of a datapoint in the test dataset.
+* `y`: the label of a datapoint.
+
+#### Solution format
+
+```json
+{
+    "nid":[0,1,2,3],
+    "y": [0,1,0,1]
+}
+```
+
+The file must contain two field: `nid` and `y`.
+
+* `nid`: contains a unique identifier of a datapoint in the test dataset.
+* `y`: the predicted label of a datapoint.

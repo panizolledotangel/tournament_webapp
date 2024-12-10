@@ -7,15 +7,20 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from werkzeug.serving import run_simple
 
 from sources.services.google_drive_service import GoogleDriveService
-from sources.logic.tournament import Tournament
-from sources.logic.tsp_problem import TSPProblem
+from sources.logic import Tournament
 
+def get_problem_class():
+    problem_class = os.getenv("PROBLEM_CLASS")
+    mod = __import__('sources.logic', fromlist=[problem_class])
+    klass = getattr(mod, problem_class)
+    return klass
 
 logging.basicConfig(level=logging.DEBUG)
 
 gdrive = GoogleDriveService()
-problem = TSPProblem()
-t = Tournament(gdrive, problem)
+problem = get_problem_class()()
+maximize = bool(os.getenv("PROBLEM_MAXIMIZE"))
+t = Tournament(gdrive, problem, maximize=maximize)
 
 def check_for_new_results():
     logging.getLogger("acotournament").debug("Checking for new results...")
@@ -44,7 +49,7 @@ def get_rankings():
     scores = t.ranking.get_scores()
     
     ranks = list(scores.items())
-    ranks = sorted(ranks, key=lambda x: x[1]['best'], reverse=False)
+    ranks = sorted(ranks, key=lambda x: x[1]['best'], reverse=maximize)
     ranks = [{'name': e[0], 'best': f"{e[1]['best']:.4f}", 'last': f"{e[1]['last'][-1]:.4f}", "status": e[1]["status"]} for e in ranks]
 
     return jsonify(ranks)
