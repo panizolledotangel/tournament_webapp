@@ -116,5 +116,5 @@ The file must contain two field: `nid` and `y`.
 
 If you want to include a new problem in the system you need follow the nest steps:
 
-1. Create a new class that implements the `Problem` interface located at `sources.logic.problem`. This interface has a single method called `solve` that receives a Dictionary with the .json file uploaded by the contestants and must return a single float value that evaluates the solution. The init method should not have any parameters, any extra information needed to configure your problem should be read from a file provided via the `PROBLEM_FILE` environment variable.
+1. Create a new class that implements the `Problem` interface located at `sources.logic.problem`. This interface has a single method called `solve` that receives a Dictionary with the .json file uploaded by the contestants and must return a single float value that evaluates the solution. The `__init__ method should not have any parameters, any extra information needed to configure your problem should be read from a file provided via the `PROBLEM_FILE` environment variable.
 2. Import the class created at step 2 in the `__init__.py` of the logic package (`sources.logic.__init__.py`). This is required so the system can load the problem class dinamically from the environment varible `PROBLEM_CLASS`.
