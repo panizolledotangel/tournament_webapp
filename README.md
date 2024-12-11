@@ -1,6 +1,6 @@
 # tsp_competi
 
-This repository contains code for a web app to do tournaments. During a tournament contestants must compete to solve a TSP (traveling salesman problem). The tournaments uses google drive to read the solutions of the contestants and shows the results in a ranking via web. The ranking is periodically updated automatically.
+This repository contains code for a web app to do tournaments. During a tournament contestants must compete to solve a problem (several kinds of problems are included). The tournaments uses google drive to read the solutions of the contestants and shows the results in a ranking via web. The ranking is periodically updated automatically.
 
 ## Pre-requisites
 
@@ -39,7 +39,7 @@ RANKING_FOLDER_PATH=
 FLASK_PORT=
 ```
 
-6. **Start the application**: Run `docker-compose up` to start the application. Once everything is ready the application will be accesible at *http://localhost:{FLASK_PORT}*
+5. **Start the application**: Run `docker-compose up` to start the application. Once everything is ready the application will be accesible at *http://localhost:{FLASK_PORT}*
 
 ## How the tournament works
 
@@ -47,8 +47,7 @@ Once the webapp is started the contestants will be automatically configured. The
 
 ### Send a solution
 
-Contestants can send a solution by putting a .json file with the corresponding structure inside their folder. The structure depends on the problem.
-The folder can have several .json files, however the system will only read the most recent one.
+Contestants can send a solution by putting a .json file with the corresponding structure inside their folder. The structure depends on the problem. The folder can have several .json files, however the system will only read the most recent one.
 
 ### Ranking update
 
