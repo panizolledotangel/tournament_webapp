@@ -77,6 +77,8 @@
                 let medal = '';
                 if (index === 0) { // First place
                     medal = '🥇';
+                } else if (index === 1) { // Second place
+                    medal = '🥈';
                 }
     
                 entry.innerHTML = `<span class="status-icon">${statusIcon}</span><span class="medal">${medal}</span> ${rank.name}: ${rank.last} (${rank.best})`;
