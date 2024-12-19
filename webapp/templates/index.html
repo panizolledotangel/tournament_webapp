@@ -42,14 +42,22 @@
 </head>
 <body>
     <h1>Tournament Rankings</h1>
+    <p>Last checked: <span id="last-checked"></span></p>
     <div id="rankings">
         <!-- Rankings will be inserted here -->
     </div>
     <script>
         async function fetchRankings() {
             const response = await fetch('/api/rankings');
-            const rankings = await response.json();
+            const data = await response.json();
+            const rankings = data.ranks;
+            const last_checked = data.last_checked;
+
+            // Update the last checked time
+            const lastCheckedElement = document.getElementById('last-checked');
+            lastCheckedElement.textContent = last_checked;
             
+            // Update the rankings display
             const rankingsContainer = document.getElementById('rankings');
             rankingsContainer.innerHTML = ''; // Clear current rankings
             

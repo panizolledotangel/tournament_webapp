@@ -1,7 +1,7 @@
 import logging
 import os
 import json
-from datetime import datetime
+from datetime import datetime, time
 
 from sources.services.google_drive_service import GoogleDriveService
 from sources.logic.ranking import Ranking
@@ -13,12 +13,14 @@ class Tournament:
         self.gdrive = g_drive
         self.tournament_name = os.getenv('TOURNAMENT_NAME')
         self.contestants = self._load_contestants()
-        self.last_checked = self._load_last_checked()
+        self.last_contestant_checked = self._load_last_checked()
         self.last_md5 = self._load_last_md5()
         self.ranking =  self._load_ranking(problem, maximize)
         self.logger = logging.getLogger("acotournament")
+        self.last_checked = datetime.now().time()
 
     def check_for_new_results(self):
+        self.last_checked = datetime.now().time()
         for contestant in self.contestants.keys():
             try:
                 new_result, f_name = self._check_contestant(contestant)
@@ -63,7 +65,7 @@ class Tournament:
             files.sort(key=lambda f: f["modifiedTime"], reverse=True)
 
             f = files[0]
-            self.last_checked[name] = f['modifiedTime']
+            self.last_contestant_checked[name] = f['modifiedTime']
             self.last_md5[name] = f['md5Checksum']
 
             return self.gdrive.load_json(f['id']), f['name']
@@ -72,7 +74,7 @@ class Tournament:
         
     def _is_file_valid(self, file, contestant):
         
-        if file["modifiedTime"] <= self.last_checked[contestant]:
+        if file["modifiedTime"] <= self.last_contestant_checked[contestant]:
             return False
         
         if file['md5Checksum'] == self.last_md5[contestant]:

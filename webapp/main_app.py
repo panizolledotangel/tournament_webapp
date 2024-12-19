@@ -47,12 +47,18 @@ def index():
 @app.route('/api/rankings')
 def get_rankings():
     scores = t.ranking.get_scores()
+    last_checked = t.last_checked.strftime('%H:%M:%S')
     
     ranks = list(scores.items())
     ranks = sorted(ranks, key=lambda x: x[1]['best'], reverse=maximize)
     ranks = [{'name': e[0], 'best': f"{e[1]['best']:.4f}", 'last': f"{e[1]['last'][-1]:.4f}", "status": e[1]["status"]} for e in ranks]
 
-    return jsonify(ranks)
+    data = {
+        'last_checked': last_checked,
+        'ranks': ranks
+    }
+
+    return jsonify(data)
 
 @app.route('/statuses')
 def show_statuses():
