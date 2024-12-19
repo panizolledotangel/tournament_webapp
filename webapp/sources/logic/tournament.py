@@ -1,7 +1,8 @@
 import logging
 import os
 import json
-from datetime import datetime, time
+import pytz
+from datetime import datetime
 
 from sources.services.google_drive_service import GoogleDriveService
 from sources.logic.ranking import Ranking
@@ -11,16 +12,17 @@ class Tournament:
 
     def __init__(self, g_drive, problem: Problem, maximize: bool = False):
         self.gdrive = g_drive
+        self.tz_info = pytz.timezone(os.environ["TIMEZONE"])
+        self.last_checked = datetime.now(self.tz_info).time()
         self.tournament_name = os.getenv('TOURNAMENT_NAME')
         self.contestants = self._load_contestants()
         self.last_contestant_checked = self._load_last_checked()
         self.last_md5 = self._load_last_md5()
         self.ranking =  self._load_ranking(problem, maximize)
         self.logger = logging.getLogger("acotournament")
-        self.last_checked = datetime.now().time()
 
     def check_for_new_results(self):
-        self.last_checked = datetime.now().time()
+        self.last_checked = datetime.now(self.tz_info).time()
         for contestant in self.contestants.keys():
             try:
                 new_result, f_name = self._check_contestant(contestant)
@@ -32,7 +34,7 @@ class Tournament:
                 self.logger.error(f"Error checking contestant {contestant}: {e}")
 
     def save_ranking(self, path=None):
-        file_name = f"{datetime.now().strftime('%Y-%m-%d_h%H')}_{self.tournament_name}.json"
+        file_name = f"{datetime.now(self.tz_info).strftime('%Y-%m-%d_h%H')}_{self.tournament_name}.json"
         path = file_name if path is None else os.path.join(path, file_name)
         with open(path, "w") as f:
             json.dump(self.ranking.get_scores(), f)
@@ -46,7 +48,7 @@ class Tournament:
         return Ranking(self.contestants.keys(), problem, maximize)
 
     def _load_last_checked(self):
-        return {c: datetime(1970, 1, 1) for c in self.contestants.keys()}
+        return {c: datetime(1970, 1, 1, tzinfo=self.tz_info) for c in self.contestants.keys()}
 
     def _load_last_md5(self):
         return {c: None for c in self.contestants.keys()}

@@ -11,6 +11,7 @@ services:
       - ROOT_FOLDER_ID=${ROOT_FOLDER_ID}
       - GOOGLE_CREDENTIALS_PATH=/credentials/${GOOGLE_CREDENTIALS_FILE}
       - RANKING_PATH=/rankings
+      - TIMEZONE=${TIMEZONE}
     stop_signal: SIGINT
     volumes:
       - ./${PROBLEM_FILE}:/problem/${PROBLEM_FILE}:ro

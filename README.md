@@ -37,6 +37,8 @@ GOOGLE_CREDENTIALS_FILE=
 RANKING_FOLDER_PATH=
 # Port where the web with the ranking is available
 FLASK_PORT=
+# Timezone info for accurate time display
+TIMEZONE=
 ```
 
 5. **Start the application**: Run `docker-compose up` to start the application. Once everything is ready the application will be accesible at *http://localhost:{FLASK_PORT}*

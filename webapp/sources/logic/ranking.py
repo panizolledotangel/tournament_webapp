@@ -1,4 +1,5 @@
 import os
+import pytz
 from datetime import datetime
 from typing import List, Dict
 
@@ -15,12 +16,13 @@ class Ranking:
         self.problem = problem
         self.ranking = self._create_ranking(contestants)
         self.maximize = maximize
+        self.tz_info = pytz.timezone(os.environ["TIMEZONE"])
     
     def update(self, contestant: str, filename: str, result: Dict):
         try:
             score = self.problem.solve(result)
             self.ranking[contestant]["status"] = self.OK_STATUS
-            self.ranking[contestant]["message"] = f"Submitted: {filename} on {datetime.now().strftime('%H:%M')}"
+            self.ranking[contestant]["message"] = f"Submitted: {filename} on {datetime.now(self.tz_info).strftime('%H:%M')}"
             self._update_score(contestant, score)
         except Exception as e:
             self.set_error(contestant, f"Error on {filename}: {e}")
