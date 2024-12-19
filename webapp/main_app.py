@@ -20,7 +20,8 @@ logging.basicConfig(level=logging.DEBUG)
 gdrive = GoogleDriveService()
 problem = get_problem_class()()
 maximize = bool(os.getenv("PROBLEM_MAXIMIZE"))
-t = Tournament(gdrive, problem, maximize=maximize)
+restore_snapshot = bool(os.getenv("RESTORE_SNAPSHOT"))
+t = Tournament(gdrive, problem, maximize=maximize, restore_snapshot=restore_snapshot)
 
 def check_for_new_results():
     logging.getLogger("acotournament").info("Checking for new results...")
@@ -71,6 +72,15 @@ def get_rankings():
 def show_statuses():
     contestants = t.ranking.get_messages()
     return render_template('status.html', contestants=contestants)
+
+@app.route('/score-evolution')
+def show_score_evolution():
+    return render_template('graph.html')
+
+@app.route('/api/score-evolution')
+def get_score_evolution():
+    data = t.ranking.get_scores_evolution()
+    return jsonify(data)
 
 if __name__ == '__main__':
     #app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8897)

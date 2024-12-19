@@ -43,6 +43,14 @@ class Ranking:
     def get_messages(self):
         return [{"name": c, "message": self.ranking[c]["message"]} for c in self.ranking.keys()]
     
+    def get_scores_evolution(self):
+        contestants = list(self.ranking.keys())
+        data = {
+            'contestants': contestants,
+            'scores': [self.ranking[c]["last"] for c in contestants]
+        }
+        return data
+    
     def _create_ranking(self, contestants: List[str]):
         return {c: {"best": int(os.environ["INITIAL_SCORE"]), "last": [int(os.environ["INITIAL_SCORE"])], "status": self.PENDING, "message": "No score submitted jet"} for c in contestants}
     

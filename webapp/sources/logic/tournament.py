@@ -10,7 +10,7 @@ from sources.logic.problem import Problem
 
 class Tournament:
 
-    def __init__(self, g_drive, problem: Problem, maximize: bool = False):
+    def __init__(self, g_drive, problem: Problem, maximize: bool = False, restore_snapshot: bool = False):
         self.gdrive = g_drive
         self.logger = logging.getLogger("acotournament")
         self.tz_info = pytz.timezone(os.environ["TIMEZONE"])
@@ -18,7 +18,7 @@ class Tournament:
         self.tournament_name = os.getenv('TOURNAMENT_NAME')
 
         snapshot = None
-        if os.environ.get("RESTORE_SNAPSHOT") == 1:
+        if restore_snapshot:
             snapshot =  self._restore_last_snapshot()
         
         self.needs_snapshot = snapshot is None
