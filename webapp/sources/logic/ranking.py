@@ -34,6 +34,9 @@ class Ranking:
     def get_scores(self):
         return self.ranking
     
+    def load_scores(self, scores: Dict):
+        self.ranking = scores
+    
     def get_status(self, contestant: str):
         return self.ranking[contestant]["status"]
     

@@ -23,16 +23,23 @@ maximize = bool(os.getenv("PROBLEM_MAXIMIZE"))
 t = Tournament(gdrive, problem, maximize=maximize)
 
 def check_for_new_results():
-    logging.getLogger("acotournament").debug("Checking for new results...")
+    logging.getLogger("acotournament").info("Checking for new results...")
     t.check_for_new_results()
+    logging.getLogger("acotournament").info("Done!")
+
+def save_snapshot():
+    logging.getLogger("acotournament").debug("Saving snapshot...")
+    t.save_snapshot(os.getenv('SNAPSHOT_FOLDER_PATH'))
+    logging.getLogger("acotournament").debug("Done!")
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(check_for_new_results, 'interval', seconds=60)
+scheduler.add_job(save_snapshot, 'interval', seconds=int(60*1.8))
 scheduler.start()
 
 def signal_handler(sig, frame):
     print('Performing shutdown tasks...')
-    t.save_ranking(os.getenv('RANKING_PATH'))
+    save_snapshot()
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)

@@ -33,8 +33,10 @@ INITIAL_SCORE=
 ROOT_FOLDER_ID=
 # file with the credentials to access your google drive, created at step 1
 GOOGLE_CREDENTIALS_FILE=
-# path to a folder where a log of the tournament will be saved
-RANKING_FOLDER_PATH=
+# path to a folder where snapshots of the tournament are saved so the tournament can be restarted in case of an error
+SNAPSHOT_FOLDER_PATH=
+# 1 for restoring the last sesion from the snapshots folder, 0 to create a new tournament
+RESTORE_SNAPSHOT=0
 # Port where the web with the ranking is available
 FLASK_PORT=
 # Timezone info for accurate time display
