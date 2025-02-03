@@ -40,7 +40,7 @@ RESTORE_SNAPSHOT=0
 # Port where the web with the ranking is available
 FLASK_PORT=
 # Timezone info for accurate time display
-TIMEZONE=
+TIMEZONE='Europe/Paris'
 ```
 
 5. **Start the application**: Run `docker-compose up` to start the application. Once everything is ready the application will be accesible at *http://localhost:{FLASK_PORT}*
