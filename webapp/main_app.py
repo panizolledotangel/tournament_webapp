@@ -19,8 +19,9 @@ logging.basicConfig(level=logging.DEBUG)
 
 gdrive = GoogleDriveService()
 problem = get_problem_class()()
-maximize = bool(os.getenv("PROBLEM_MAXIMIZE"))
-restore_snapshot = bool(os.getenv("RESTORE_SNAPSHOT"))
+maximize = int(os.getenv("PROBLEM_MAXIMIZE")) == 1
+restore_snapshot = int(os.getenv("RESTORE_SNAPSHOT")) == 1
+logging.getLogger("acotournament").info(f"Restore snapshot = {restore_snapshot}")
 t = Tournament(gdrive, problem, maximize=maximize, restore_snapshot=restore_snapshot)
 
 def check_for_new_results():

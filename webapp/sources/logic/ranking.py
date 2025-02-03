@@ -13,10 +13,10 @@ class Ranking:
     PENDING = 0
 
     def __init__(self, contestants: List[str], problem: Problem, maximize: bool):
-        self.problem = problem
-        self.ranking = self._create_ranking(contestants)
-        self.maximize = maximize
         self.tz_info = pytz.timezone(os.environ["TIMEZONE"])
+        self.problem = problem
+        self.maximize = maximize
+        self.ranking = self._create_ranking(contestants)
     
     def update(self, contestant: str, filename: str, result: Dict):
         try:
@@ -47,12 +47,21 @@ class Ranking:
         contestants = list(self.ranking.keys())
         data = {
             'contestants': contestants,
-            'scores': [self.ranking[c]["last"] for c in contestants]
+            'scores': [self.ranking[c]["last"] for c in contestants],
+            'times': [self.ranking[c]["last_time"] for c in contestants]
         }
         return data
     
     def _create_ranking(self, contestants: List[str]):
-        return {c: {"best": int(os.environ["INITIAL_SCORE"]), "last": [int(os.environ["INITIAL_SCORE"])], "status": self.PENDING, "message": "No score submitted jet"} for c in contestants}
+        return {
+            c: {
+                "best": int(os.environ["INITIAL_SCORE"]), 
+                "last": [int(os.environ["INITIAL_SCORE"])],
+                "last_time": [datetime.now(self.tz_info).strftime('%H:%M')], 
+                "status": self.PENDING, 
+                "message": "No score submitted jet"
+            } for c in contestants
+        }
     
     def _update_score(self, contestant: str, score: float):
         if self.maximize:
@@ -63,3 +72,4 @@ class Ranking:
                 self.ranking[contestant]["best"] = score 
         
         self.ranking[contestant]["last"].append(score)
+        self.ranking[contestant]["last_time"].append(datetime.now(self.tz_info).strftime('%H:%M'))
